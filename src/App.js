@@ -1,4 +1,5 @@
 import { use, useEffect, useState } from "react";
+import StarRating from "./StarRating";
 
 const tempMovieData = [
   {
@@ -102,7 +103,11 @@ export default function App() {
           selectedid={selectedid}
           setselectedid={setselectedid}
         />
-        <WatchedBox watchedmovies={watchedmovies} selectedid={selectedid} />
+        <WatchedBox
+          watchedmovies={watchedmovies}
+          selectedid={selectedid}
+          setselectedid={setselectedid}
+        />
       </Main>
     </>
   );
@@ -171,7 +176,10 @@ function Error({ error }) {
 function Loader() {
   return <div className="loader">loading....</div>;
 }
-function WatchedBox({ watchedmovies, selectedid }) {
+function WatchedBox({ watchedmovies, selectedid, setselectedid }) {
+  function onclickBack() {
+    setselectedid(null);
+  }
   const [clickedwatched, setclickedwatched] = useState(true);
   const imdbRatingWatched = watchedmovies.reduce(
     (acc, curr, i, arr) => acc + curr.imdbRating / arr.length,
@@ -192,7 +200,7 @@ function WatchedBox({ watchedmovies, selectedid }) {
   return (
     <div className="box">
       {selectedid ? (
-        <MovieDetails selectedid={selectedid} />
+        <MovieDetails selectedid={selectedid} onclickBack={onclickBack} />
       ) : clickedwatched ? (
         <>
           <div className="summary">
@@ -218,8 +226,62 @@ function WatchedBox({ watchedmovies, selectedid }) {
     </div>
   );
 }
-function MovieDetails({ selectedid }) {
-  return <div className="details">{selectedid}</div>;
+function MovieDetails({ selectedid, back, onclickBack }) {
+  const [movie, setmovie] = useState({});
+  const {
+    Title: title,
+    Year: year,
+    Poster: poster,
+    Runtime: runtime,
+    imdbRating,
+    Plot: plot,
+    Released: released,
+    Actors: actors,
+    Director: director,
+    Genre: genre,
+  } = movie;
+  useEffect(
+    function () {
+      async function getMovieDetails() {
+        const res = await fetch(
+          `http://www.omdbapi.com/?apikey=${KEY}&i=${selectedid}`
+        );
+        const data = await res.json();
+        setmovie(data);
+      }
+      getMovieDetails();
+    },
+    [selectedid]
+  );
+  return (
+    <div className="details">
+      <header>
+        <button className="btn-back" onClick={onclickBack}>
+          &larr;
+        </button>
+        <img src={poster} alt={`Poster of the movie ${title}`} />
+        <div className="details-overview">
+          <h2>{title}</h2>
+          <p>
+            {year} &bull; {runtime}
+          </p>
+          <p>{released}</p>
+          <p>{genre}</p>
+          <p>⭐ {imdbRating}</p>
+        </div>
+      </header>
+      <section>
+        <div className="rating">
+          <StarRating maxRating={10} size={24} />
+        </div>
+        <p>
+          <em>{plot}</em>
+        </p>
+        <p>Starring {actors}</p>
+        <p>Directed by {director}</p>
+      </section>
+    </div>
+  );
 }
 function MoviesList({ movies, selectedid, setselectedid }) {
   return (
