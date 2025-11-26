@@ -179,8 +179,8 @@ function WatchedBox({
             <h2>MOVIES YOU WATCHED</h2>
             <div>
               <p>🔄️ {watchedmovies.length} movies</p>
-              <p>⭐ {imdbRatingWatched.tofixed(2)}</p>
-              <p>🌟 {userRatingWatched.tofixed(2)}</p>
+              <p>⭐ {imdbRatingWatched.toFixed(2)}</p>
+              <p>🌟 {userRatingWatched.toFixed(2)}</p>
               <p>⏳ {totalTimeWatched} min</p>
             </div>
           </div>
