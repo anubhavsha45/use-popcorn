@@ -1,4 +1,4 @@
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import StarRating from "./StarRating";
 const average = (arr) =>
   arr.reduce((acc, cur, i, arr) => acc + cur / arr.length, 0);
@@ -19,19 +19,23 @@ export default function App() {
 
   useEffect(
     function () {
+      const controller = new AbortController();
       async function fetchMovie() {
         try {
           setisloading(true);
           seterror("");
           const res = await fetch(
-            `http://www.omdbapi.com/?apikey=${KEY}&s=${moviename}`
+            `http://www.omdbapi.com/?apikey=${KEY}&s=${moviename}`,
+            { signal: controller.signal }
           );
           if (!res.ok) throw new Error("Sorry cant fetch the movies right now");
           const data = await res.json();
           if (data.Response === "False") throw new Error("Movie not found");
           setmovies(data.Search);
         } catch (err) {
-          seterror(err.message);
+          if (err.message !== "AbortError") {
+            seterror(err.message);
+          }
         } finally {
           setisloading(false);
         }
@@ -42,6 +46,9 @@ export default function App() {
         return;
       }
       fetchMovie();
+      return function () {
+        controller.abort();
+      };
     },
     [moviename]
   );
@@ -237,6 +244,27 @@ function MovieDetails({
     },
     [selectedid]
   );
+  useEffect(
+    function () {
+      if (!title) return;
+      document.title = `Movie | ${title}`;
+      return function () {
+        document.title = "usePopcorn";
+      };
+    },
+    [title]
+  );
+  useEffect(function () {
+    function callBack(e) {
+      if (e.code === "Escape") {
+        onclickBack();
+      }
+    }
+    document.addEventListener("keydown", callBack);
+    return function () {
+      document.removeEventListener("keydown", callBack);
+    };
+  }, []);
   function handleAdd() {
     const newMovie = {
       imdbID: selectedid,
@@ -273,7 +301,7 @@ function MovieDetails({
           {" "}
           {isWatched ? (
             <p>
-              You rated this movie{rateWatched.userRating} <span>⭐</span>
+              You rated this movie : {rateWatched.userRating} <span>⭐</span>
             </p>
           ) : (
             <div className="rating">
