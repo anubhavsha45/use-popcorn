@@ -282,12 +282,18 @@ body {
 .rating {
   background-color: var(--color-background-100);
   border-radius: 0.9rem;
-  padding: 2rem 2.4rem;
+
+  /* FIXED ↓ */
+  padding: 1.2rem 2rem; /* Reduced vertical padding */
   margin-bottom: 0.8rem;
-  font-weight: 600;
+
   display: flex;
   flex-direction: column;
-  gap: 2.4rem;
+  align-items: center;
+  justify-content: center;
+
+  gap: 1rem; /* Smaller gap for cleaner look */
+  font-weight: 600;
 }
 
 .btn-add {

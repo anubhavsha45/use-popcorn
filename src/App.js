@@ -1,11 +1,14 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import StarRating from "./StarRating";
 const average = (arr) =>
   arr.reduce((acc, cur, i, arr) => acc + cur / arr.length, 0);
 const KEY = "cee88759";
 export default function App() {
   const [movies, setmovies] = useState([]);
-  const [watchedmovies, setwatchedmovies] = useState([]);
+  const [watchedmovies, setwatchedmovies] = useState(function () {
+    const storeValue = localStorage.getItem("watched");
+    return JSON.parse(storeValue);
+  });
   const [isloading, setisloading] = useState(false);
   const [error, seterror] = useState("");
   const [moviename, setmoviename] = useState("");
@@ -16,6 +19,12 @@ export default function App() {
   function handleDeletion(id) {
     setwatchedmovies((movies) => movies.filter((m) => m.imdbID !== id));
   }
+  useEffect(
+    function () {
+      localStorage.setItem("watched", JSON.stringify(watchedmovies));
+    },
+    [watchedmovies]
+  );
 
   useEffect(
     function () {
@@ -92,6 +101,22 @@ function Logo() {
   );
 }
 function SearchMovies({ moviename, setmoviename }) {
+  const inputEl = useRef(null);
+  useEffect(
+    function () {
+      inputEl.current.focus();
+      function callback(e) {
+        if (document.activeElement === inputEl.current) return;
+        if (e.code === "Enter") {
+          inputEl.current.focus();
+          setmoviename("");
+        }
+      }
+      document.addEventListener("keydown", callback);
+      return () => document.addEventListener("keydown", callback);
+    },
+    [setmoviename]
+  );
   return (
     <input
       className="search"
@@ -99,6 +124,7 @@ function SearchMovies({ moviename, setmoviename }) {
       placeholder="Search Movies..."
       value={moviename}
       onChange={(e) => setmoviename(e.target.value)}
+      ref={inputEl}
     />
   );
 }
@@ -217,6 +243,13 @@ function MovieDetails({
 }) {
   const [movie, setmovie] = useState({});
   const [userRating, setuserRating] = useState("");
+  const countRef = useRef(0);
+  useEffect(
+    function () {
+      if (userRating) countRef.current++;
+    },
+    [userRating]
+  );
   const {
     Title: title,
     Year: year,
@@ -274,6 +307,7 @@ function MovieDetails({
       imdbRating: Number(imdbRating),
       runtime: Number(runtime.split(" ")[0]),
       userRating,
+      countdecisions: countRef.current,
     };
     if (isWatched) return;
     onAddBtn(newMovie);
