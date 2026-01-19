@@ -21,8 +21,9 @@ html {
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
-    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu,
+    Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
 
   color: var(--color-text);
   background-color: var(--color-background-900);
@@ -342,6 +343,102 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+/* ========================= */
+/* 📱 Mobile Responsiveness */
+/* ========================= */
+
+@media (max-width: 768px) {
+  body {
+    padding: 1.2rem;
+  }
+
+  .nav-bar {
+    grid-template-columns: 1fr;
+    row-gap: 1rem;
+    height: auto;
+    padding: 1.6rem;
+    text-align: center;
+  }
+
+  .logo {
+    justify-content: center;
+  }
+
+  .search {
+    width: 100%;
+    font-size: 1.6rem;
+  }
+
+  .num-results {
+    justify-self: center;
+    font-size: 1.4rem;
+  }
+
+  .main {
+    flex-direction: column;
+    height: auto;
+    gap: 1.6rem;
+  }
+
+  .box {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .list li {
+    grid-template-columns: 5rem 1fr;
+    padding: 1.2rem 1.6rem;
+    column-gap: 1.2rem;
+    font-size: 1.4rem;
+  }
+
+  .list h3 {
+    font-size: 1.6rem;
+  }
+
+  .summary {
+    padding: 1.6rem;
+  }
+
+  .summary div {
+    flex-wrap: wrap;
+    gap: 1.2rem;
+    font-size: 1.4rem;
+  }
+
+  .details header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .details img {
+    width: 60%;
+    margin-bottom: 1rem;
+  }
+
+  .details-overview {
+    padding: 1.6rem;
+  }
+
+  .details-overview h2 {
+    font-size: 1.8rem;
+  }
+
+  .details section {
+    padding: 2rem;
+  }
+
+  .btn-toggle {
+    top: 0.6rem;
+    right: 0.6rem;
+  }
+
+  .btn-back {
+    top: 0.6rem;
+    left: 0.6rem;
+  }
 }
 
 /*
