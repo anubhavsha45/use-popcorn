@@ -32,7 +32,7 @@ export default function App() {
           setisloading(true);
           seterror("");
           const res = await fetch(
-            `http://www.omdbapi.com/?apikey=${KEY}&s=${moviename}`,
+            `https://www.omdbapi.com/?apikey=${KEY}&s=${moviename}`,
             { signal: controller.signal },
           );
           if (!res.ok) throw new Error("Sorry cant fetch the movies right now");
@@ -266,7 +266,7 @@ function MovieDetails({
     function () {
       async function getMovieDetails() {
         const res = await fetch(
-          `http://www.omdbapi.com/?apikey=${KEY}&i=${selectedid}`,
+          `https://www.omdbapi.com/?apikey=${KEY}&i=${selectedid}`,
         );
         const data = await res.json();
         setmovie(data);
