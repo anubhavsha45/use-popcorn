@@ -1,7 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import StarRating from "./StarRating";
-const average = (arr) =>
-  arr.reduce((acc, cur, i, arr) => acc + cur / arr.length, 0);
 const KEY = "cee88759";
 export default function App() {
   const [movies, setmovies] = useState([]);
@@ -23,7 +21,7 @@ export default function App() {
     function () {
       localStorage.setItem("watched", JSON.stringify(watchedmovies));
     },
-    [watchedmovies]
+    [watchedmovies],
   );
 
   useEffect(
@@ -35,7 +33,7 @@ export default function App() {
           seterror("");
           const res = await fetch(
             `http://www.omdbapi.com/?apikey=${KEY}&s=${moviename}`,
-            { signal: controller.signal }
+            { signal: controller.signal },
           );
           if (!res.ok) throw new Error("Sorry cant fetch the movies right now");
           const data = await res.json();
@@ -59,7 +57,7 @@ export default function App() {
         controller.abort();
       };
     },
-    [moviename]
+    [moviename],
   );
   return (
     <>
@@ -115,7 +113,7 @@ function SearchMovies({ moviename, setmoviename }) {
       document.addEventListener("keydown", callback);
       return () => document.addEventListener("keydown", callback);
     },
-    [setmoviename]
+    [setmoviename],
   );
   return (
     <input
@@ -183,15 +181,15 @@ function WatchedBox({
   const [clickedwatched, setclickedwatched] = useState(true);
   const imdbRatingWatched = watchedmovies.reduce(
     (acc, curr, i, arr) => acc + curr.imdbRating / arr.length,
-    0
+    0,
   );
   const userRatingWatched = watchedmovies.reduce(
     (acc, curr, i, arr) => acc + curr.userRating / arr.length,
-    0
+    0,
   );
   const totalTimeWatched = watchedmovies.reduce(
     (acc, curr) => acc + curr.runtime,
-    0
+    0,
   );
 
   function toggleWatched() {
@@ -248,7 +246,7 @@ function MovieDetails({
     function () {
       if (userRating) countRef.current++;
     },
-    [userRating]
+    [userRating],
   );
   const {
     Title: title,
@@ -268,14 +266,14 @@ function MovieDetails({
     function () {
       async function getMovieDetails() {
         const res = await fetch(
-          `http://www.omdbapi.com/?apikey=${KEY}&i=${selectedid}`
+          `http://www.omdbapi.com/?apikey=${KEY}&i=${selectedid}`,
         );
         const data = await res.json();
         setmovie(data);
       }
       getMovieDetails();
     },
-    [selectedid]
+    [selectedid],
   );
   useEffect(
     function () {
@@ -285,19 +283,22 @@ function MovieDetails({
         document.title = "usePopcorn";
       };
     },
-    [title]
+    [title],
   );
-  useEffect(function () {
-    function callBack(e) {
-      if (e.code === "Escape") {
-        onclickBack();
+  useEffect(
+    function () {
+      function callBack(e) {
+        if (e.code === "Escape") {
+          onclickBack();
+        }
       }
-    }
-    document.addEventListener("keydown", callBack);
-    return function () {
-      document.removeEventListener("keydown", callBack);
-    };
-  }, []);
+      document.addEventListener("keydown", callBack);
+      return function () {
+        document.removeEventListener("keydown", callBack);
+      };
+    },
+    [onclickBack],
+  );
   function handleAdd() {
     const newMovie = {
       imdbID: selectedid,
